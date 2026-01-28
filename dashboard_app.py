@@ -48,11 +48,37 @@ st.markdown("""
 # Load data
 @st.cache_data
 def load_data():
-    # Use comprehensive cleaned dataset
-    df_clean = pd.read_csv('car_prices_comprehensive_clean.csv')
-    st.sidebar.success("Dataset: 543,518 records | 100% complete")
-    return df_clean
+    # Try to load from file, otherwise show uploader
+    try:
+        df_clean = pd.read_csv('car_prices_comprehensive_clean.csv')
+        st.sidebar.success("Dataset: 543,518 records | 100% complete")
+        return df_clean
+    except FileNotFoundError:
+        st.sidebar.warning("Dataset file not found. Please upload the CSV file.")
+        return None
 
+# Check if data needs to be uploaded
+uploaded_file = None
+df = load_data()
+
+if df is None:
+    st.title("USA Car Prices Analysis Dashboard")
+    st.info("Please upload the cleaned dataset to begin analysis.")
+    
+    uploaded_file = st.file_uploader(
+        "Upload car_prices_comprehensive_clean.csv",
+        type=['csv'],
+        help="Upload the cleaned dataset CSV file (543,518 records)"
+    )
+    
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file)
+        st.success(f"Dataset loaded successfully! {len(df):,} records")
+        st.rerun()
+    else:
+        st.stop()
+
+# Continue with normal dashboard
 def get_data_stats(df):
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
     categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
@@ -62,10 +88,8 @@ def get_data_stats(df):
 st.title("USA Car Prices Analysis Dashboard")
 st.markdown("---")
 
-# Load data
-with st.spinner("Loading data..."):
-    df = load_data()
-    numeric_cols, categorical_cols = get_data_stats(df)
+# Get data stats
+numeric_cols, categorical_cols = get_data_stats(df)
 
 # Sidebar
 st.sidebar.header("Dashboard Navigation")
