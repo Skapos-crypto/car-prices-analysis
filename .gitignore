@@ -1,0 +1,32 @@
+# Data files (too large for GitHub)
+*.csv
+car_prices*.csv
+*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Reports (optional - can be generated)
+*.html
+
+# Logs
+*.log
